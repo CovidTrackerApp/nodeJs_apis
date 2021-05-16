@@ -1,0 +1,16 @@
+
+For deleting databases
+
+https://stackoverflow.com/questions/17449420/postgresql-unable-to-drop-database-because-of-some-auto-connections-to-db
+
+sudo su postgres
+
+psql -U postgres -c "REVOKE CONNECT ON DATABASE test_db FROM public;"
+psql -U postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname='test_db2'"
+
+psql -U postgres -c "DROP DATABASE test_db2"
+
+
+
+
+
