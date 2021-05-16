@@ -11,6 +11,24 @@ psql -U postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_s
 psql -U postgres -c "DROP DATABASE test_db2"
 
 
+# How to import CSV data to postgre sql database?
+
+First of all u need to give write access to postgresql db table that u are accessing through pg admin then carry out these steps
+
+If the file and the PostgreSQL database are on the same machine, then the path and/or name of the file are not correct.
+
+If the file is on your local machine and the database is on another, you cannot use the COPY command in SQL. You have two main choices to make this work:
+
+1) Use psql \copy from your local machine. The syntax is similar, but it will transfer from your local to the remote. The docs are pretty helpful: https://www.postgresql.org/docs/9.5/static/app-psql.html#APP-PSQL-META-COMMANDS-COPY
+
+2) Upload the file to the remote machine and then execute your command. Just make sure you are referencing the correct path and filename.
+
+
+
+
+
+
+
 
 
 
