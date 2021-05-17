@@ -107,8 +107,7 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
         console.log(req.file);
         const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-        // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) \
-        //   FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
@@ -116,6 +115,18 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
     } catch (error) {
         console.error(error.message);
     }
+})
+
+// get sensor data of specific user. 
+app.get("/sensor_data/:sid", async(req, res) => {
+    const {sid} = req.params;
+    console.log(sid);
+
+    //     query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name");
+    query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1", [sid]);
+
+    res.json(query.rows);
+
 })
 
 // database connection here. //
