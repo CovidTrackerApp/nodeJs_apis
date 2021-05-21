@@ -102,7 +102,8 @@ app.delete("/users/:id", async (req, res) => {
     }
 })
 
-app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
+// upload sensors data. 
+app.post("/upload_sensor", upload.single("Sensor_Data/sensorCsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
@@ -127,6 +128,22 @@ app.get("/sensor_data/:sid", async(req, res) => {
 
     res.json(query.rows);
 
+})
+
+// upload BT data.
+app.post("/upload_btdata", upload.single("BT_Data/btcsv"), async (req, res) => {
+    try {
+        console.log(req.file);
+        const {name} = req.body;
+        // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
+        // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+ 
+        // res.json(query.rows[0]);
+        res.json("query.rows[0]");  
+    
+    } catch (error) {
+        console.error(error.message);
+    }
 })
 
 // database connection here. //
