@@ -5,7 +5,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/Sensor_Data');
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname);
@@ -103,12 +103,12 @@ app.delete("/users/:id", async (req, res) => {
 })
 
 // upload sensors data. 
-app.post("/upload_sensor", upload.single("Sensor_Data/sensorCsv"), async (req, res) => {
+app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-        // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
@@ -131,12 +131,12 @@ app.get("/sensor_data/:sid", async(req, res) => {
 })
 
 // upload BT data.
-app.post("/upload_btdata", upload.single("BT_Data/btcsv"), async (req, res) => {
+app.post("/upload_btdata", upload.single("btcsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-        // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
