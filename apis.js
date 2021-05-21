@@ -5,7 +5,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'uploads/Sensor_Data');
+        cb(null, 'uploads/Sensor_Data/');
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname);
@@ -108,7 +108,7 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
         console.log(req.file);
         const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-        const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/Sensor_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
