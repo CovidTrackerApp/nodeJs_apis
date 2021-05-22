@@ -12,9 +12,24 @@ const storage = multer.diskStorage({
     }
 });
 
+
 const upload = multer({
     storage : storage
 });
+
+const storage2 = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/BT_Data/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const upload2 = multer({
+    storage : storage2
+});
+
 
 const app = express();
 
@@ -131,12 +146,12 @@ app.get("/sensor_data/:sid", async(req, res) => {
 })
 
 // upload BT data.
-app.post("/upload_btdata", upload.single("btcsv"), async (req, res) => {
+app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-        const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY bt_data(sid, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
