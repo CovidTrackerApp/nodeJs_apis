@@ -1,4 +1,5 @@
 const express = require("express");
+var dateFormat = require("dateformat");
 const client = require("./db");
 const cors = require("cors");
 const multer = require("multer");
@@ -196,16 +197,27 @@ app.get("/check_me/:sid", async (req, res) => {
     try {
         
         const {sid} = req.params;
-        let d =  Date().slice(4, 15);
+        // let d =  new Date().slice(4, 15);
 
+        let d =  new Date()
+        // let dd = dateFormat(d, "mm/dd/yyyy");
+        let ddd = new Date(d);
+        let gg = ddd.setDate(ddd.getDate() - 8);
+        gg = new Date(gg)
+
+        let dd = dateFormat(gg, "mm/dd/yyyy");
+        
         console.log(sid);
         console.log(d);
+        // dd = "05/18/2021"
+        console.log(dd);
+
         
         //const query = await client.query("SELECT * FROM patient_data, users, sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1", [sid]);
         // SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1
-        const query = await client.query("SELECT * FROM patient_data INNER JOIN bt_data on patient_data.sid=bt_data.sid WHERE bt_data.sid=$1", [sid]);
+        const query = await client.query("SELECT * FROM bt_data INNER JOIN patient_data on patient_data.deviceid=bt_data.deviceid WHERE bt_data.sid=$1 AND bt_data.date > $2", [sid, dd]);
 
-        // res.json(query.rows[0]);
+        // res.json("query.rows[0]");
         res.json(query.rows);  
     
     } catch (error) {
