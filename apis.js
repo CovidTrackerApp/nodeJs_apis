@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
     }
 });
 
-
 const upload = multer({
     storage : storage
 });
@@ -29,6 +28,20 @@ const storage2 = multer.diskStorage({
 const upload2 = multer({
     storage : storage2
 });
+
+const storage3 = multer({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/Patient_Data/')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+const upload3 = multer({
+    storage: storage3
+})
+
 
 
 const app = express();
@@ -160,6 +173,41 @@ app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
         console.error(error.message);
     }
 })
+
+// // check.
+// app.get("/check_me/:sid", async (req, res) => {
+//     try {
+        
+//         const {sid} = req.params;
+//         // console
+        
+//         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
+//         const query = await client.query(`COPY bt_data(sid, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+ 
+//         // res.json(query.rows[0]);
+//         res.json("query.rows[0]");  
+    
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// })
+
+// upload patient CSV
+app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
+    try {
+        
+        const {name} = req.body;
+
+        const query = await client.query(`COPY patient_data (sid, date, time, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+
+        res.json("Query executed succesfully");
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
 
 // database connection here. //
 async function dbStart() {
