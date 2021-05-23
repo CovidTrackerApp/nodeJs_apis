@@ -17,19 +17,21 @@ const upload = multer({
 });
 
 const storage2 = multer.diskStorage({
+    
     destination: function(req, file, cb) {
         cb(null, 'uploads/BT_Data/');
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname);
     }
+
 });
 
 const upload2 = multer({
     storage : storage2
 });
 
-const storage3 = multer({
+const storage3 = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'uploads/Patient_Data/')
     },
