@@ -176,31 +176,13 @@ app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
     }
 })
 
-// // check.
-// app.get("/check_me/:sid", async (req, res) => {
-//     try {
-        
-//         const {sid} = req.params;
-//         // console
-        
-//         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
-//         const query = await client.query(`COPY bt_data(sid, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
- 
-//         // res.json(query.rows[0]);
-//         res.json("query.rows[0]");  
-    
-//     } catch (error) {
-//         console.error(error.message);
-//     }
-// })
-
 // upload patient CSV
 app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
 
-        const query = await client.query(`COPY patient_data (sid, date, time, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        const query = await client.query(`COPY patient_data (sid, date, time, deviceid, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
         res.json("Query executed succesfully");
     
@@ -209,6 +191,27 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
     }
 })
 
+// check.
+app.get("/check_me/:sid", async (req, res) => {
+    try {
+        
+        const {sid} = req.params;
+        let d =  Date().slice(4, 15);
+
+        console.log(sid);
+        console.log(d);
+        
+        //const query = await client.query("SELECT * FROM patient_data, users, sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1", [sid]);
+        // SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1
+        const query = await client.query("SELECT * FROM patient_data INNER JOIN bt_data on patient_data.sid=bt_data.sid WHERE bt_data.sid=$1", [sid]);
+
+        // res.json(query.rows[0]);
+        res.json(query.rows);  
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
 
 // database connection here. //
 async function dbStart() {
