@@ -40,7 +40,7 @@ const storage3 = multer({
 
 const upload3 = multer({
     storage: storage3
-})
+});
 
 
 
@@ -195,7 +195,7 @@ app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
 // upload patient CSV
 app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
     try {
-        
+        console.log(req.file);
         const {name} = req.body;
 
         const query = await client.query(`COPY patient_data (sid, date, time, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
@@ -206,7 +206,6 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
         console.error(error.message);
     }
 })
-
 
 
 // database connection here. //
