@@ -202,7 +202,7 @@ app.get("/check_me/:sid", async (req, res) => {
         let d =  new Date()
         // let dd = dateFormat(d, "mm/dd/yyyy");
         let ddd = new Date(d);
-        let gg = ddd.setDate(ddd.getDate() - 8);
+        let gg = ddd.setDate(ddd.getDate() - 7);
         gg = new Date(gg)
 
         let dd = dateFormat(gg, "mm/dd/yyyy");
@@ -215,7 +215,9 @@ app.get("/check_me/:sid", async (req, res) => {
         
         //const query = await client.query("SELECT * FROM patient_data, users, sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1", [sid]);
         // SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1
-        const query = await client.query("SELECT * FROM bt_data INNER JOIN patient_data on patient_data.deviceid=bt_data.deviceid WHERE bt_data.sid=$1 AND bt_data.date > $2", [sid, dd]);
+        // working. 
+        // const query = await client.query("SELECT * FROM bt_data INNER JOIN patient_data on patient_data.deviceid=bt_data.deviceid WHERE bt_data.sid=$1 AND bt_data.date > $2", [sid, dd]);
+        const query = await client.query("SELECT * FROM bt_data INNER JOIN patient_data on patient_data.deviceid=bt_data.deviceid WHERE bt_data.sid=$1 AND bt_data.date > $2 AND patient_data.result='yes'", [sid, dd]);
 
         // res.json("query.rows[0]");
         res.json(query.rows);  
