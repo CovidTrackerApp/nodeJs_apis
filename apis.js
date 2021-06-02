@@ -182,6 +182,8 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
     try {
         console.log(req.file);
         const {name} = req.body;
+        const {sender} = req.body;
+        
 
         const query = await client.query(`COPY patient_data (sid, date, time, deviceid, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
