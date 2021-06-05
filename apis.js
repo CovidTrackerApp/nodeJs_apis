@@ -233,7 +233,7 @@ app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
         // const {name} = req.body;
         // const {sender} = req.body;
         
-        const query = await client.query(`COPY beacon_scan (uname, beacondid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        const query = await client.query(`COPY beacon_scan (uname, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
         res.json("Query executed succesfully");
     
