@@ -90,9 +90,15 @@ app.post("/register", async(req, res) => {
     try {
         // console.log(req.body);
         
-        const {name} = req.body;
+        const {uname} = req.body;
+        const {password} = req.body;
         const {ph_no} = req.body;
-        const query = await client.query("INSERT INTO users (name, ph_no) VALUES ($1, $2) RETURNING *", [name, ph_no]);
+        const {email} = req.body;
+        const {age} = req.body;
+        const {gender} = req.body;
+        const {status} = req.body;
+        
+        const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, password, ph_no, email, age, gender, status]);
         
         res.json(query.rows[0]);  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
 
@@ -131,7 +137,6 @@ app.get("/users/:id", async(req, res) => {
 })
 
 // update user.
-
 app.put("/users/:id", async (req, res) => {
     try {
         const {id} = req.params;
@@ -177,12 +182,12 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
 })
 
 // get sensor data of specific user. 
-app.get("/sensor_data/:sid", async(req, res) => {
-    const {sid} = req.params;
-    console.log(sid);
+app.get("/sensor_data/:uname", async(req, res) => {
+    const {uname} = req.params;
+    console.log(uname);
 
-    //     query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name");
-    query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.sid=users.name WHERE sensor_data12.sid=$1", [sid]);
+    //     query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.uname=users.name");
+    query = await client.query("SELECT * FROM sensor_data INNER JOIN users on sensor_data.uname=users.uname WHERE sensor_data.uname=$1", [uname]);
 
     res.json(query.rows);
 
@@ -225,7 +230,7 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
 app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
     try {
         console.log(req.file);
-        const {name} = req.body;
+        // const {name} = req.body;
         // const {sender} = req.body;
         
         const query = await client.query(`COPY beacon_scan (uname, beacondid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
@@ -237,7 +242,7 @@ app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
     }
 })
 
-// Hospital uploading data.
+// Hospital uploading data and updating status table too.
 app.post("/patient_data_2", upload5.single("patientcsv_2"), async (req, res) => {
     try {
         console.log(req.file);
@@ -255,7 +260,7 @@ app.post("/patient_data_2", upload5.single("patientcsv_2"), async (req, res) => 
     }
 })
 
-// check.
+// check covid tracing.
 app.get("/check_me/:sid", async (req, res) => {
     try {
         
