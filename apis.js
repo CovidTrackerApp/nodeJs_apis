@@ -13,10 +13,6 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({
-    storage : storage
-});
-
 const storage2 = multer.diskStorage({
     
     destination: function(req, file, cb) {
@@ -28,9 +24,6 @@ const storage2 = multer.diskStorage({
 
 });
 
-const upload2 = multer({
-    storage : storage2
-});
 
 const storage3 = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -41,10 +34,30 @@ const storage3 = multer.diskStorage({
     }
 });
 
+const storage4 = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/Beacon_Data/')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+const upload = multer({
+    storage : storage
+});
+
+const upload2 = multer({
+    storage : storage2
+});
+
 const upload3 = multer({
     storage: storage3
 });
 
+const upload4 = multer({
+    storage: storage4
+});
 
 
 const app = express();
@@ -193,6 +206,23 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
         console.error(error.message);
     }
 })
+
+// upload beacon_scan data
+app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
+    try {
+        console.log(req.file);
+        const {name} = req.body;
+        // const {sender} = req.body;
+        
+        const query = await client.query(`COPY beacon_scan (uname, beacondid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+
+        res.json("Query executed succesfully");
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 
 // check.
 app.get("/check_me/:sid", async (req, res) => {
