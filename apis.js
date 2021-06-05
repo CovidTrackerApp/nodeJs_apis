@@ -43,6 +43,16 @@ const storage4 = multer.diskStorage({
     }
 });
 
+const storage5 = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/Patient_Data_2/')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+
 const upload = multer({
     storage : storage
 });
@@ -57,6 +67,10 @@ const upload3 = multer({
 
 const upload4 = multer({
     storage: storage4
+});
+
+const upload5 = multer({
+    storage: storage5
 });
 
 
