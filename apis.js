@@ -343,9 +343,10 @@ app.get("/check_me/:uname", async (req, res) => {
         ///////////////////////////////////////////////////////
         const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
         let p_ids = res.json(query.rows);
-        for (i in p_ids) {
-            console.log(i);
-        } 
+        // for (i in p_ids) {
+        //     console.log(i);
+        // } 
+        console.log(p_ids);
         
         //////////////////////////////////////// Generating HASH ///////////////////////////////////////////
         
