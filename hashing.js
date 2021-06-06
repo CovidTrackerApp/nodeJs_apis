@@ -6,7 +6,7 @@
 const crypto = require("crypto");
 
 // string to be hashed
-const str = "This is furqan ali";
+const str = "d18483a7937babdc6e65c7848404dcc263c70ad3649d805fd12032abc288e145";
 // const str = crypto.randomBytes(4);
 
 // secret or salt to be hashed with
@@ -35,30 +35,30 @@ console.log("This is salt in bytes: ", bb);
 
 ///////////////// Encryption ////////////////////////
 
-const algorithm = 'aes-256-cbc'; //Using AES encryption
-// const key = crypto.randomBytes(32);
-const key = 'vOV_ksdmpNWj6+IqCc7rdx,01lwHzf-3';
-// const key = '61f4X0FjLs4pywEt1CiW4w==:BzrFyaL/aXrZD129ujRxaLcQdTtav+gMDpo84Lz2k6U=';
-const iv = crypto.randomBytes(16);
+// const algorithm = 'aes-256-cbc'; //Using AES encryption
+// // const key = crypto.randomBytes(32);
+// const key = 'vOV_ksdmpNWj6+IqCc7rdx,01lwHzf-3';
+// // const key = '61f4X0FjLs4pywEt1CiW4w==:BzrFyaL/aXrZD129ujRxaLcQdTtav+gMDpo84Lz2k6U=';
+// const iv = crypto.randomBytes(16);
 
-//Encrypting text
-function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { 
-        iv: iv.toString('hex'),
-        encryptedData: encrypted.toString('hex')
-        // bytes: Buffer.byteLength(encryptedData, 'utf8')
-     };
- }
+// //Encrypting text
+// function encrypt(text) {
+//     let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+//     let encrypted = cipher.update(text);
+//     encrypted = Buffer.concat([encrypted, cipher.final()]);
+//     return { 
+//         iv: iv.toString('hex'),
+//         encryptedData: encrypted.toString('hex')
+//         // bytes: Buffer.byteLength(encryptedData, 'utf8')
+//      };
+//  }
  
- var hw = encrypt(hash)
- let gg = hw.encryptedData
-console.log(hw)
+//  var hw = encrypt(hash)
+//  let gg = hw.encryptedData
+// console.log(hw)
 
-bb = Buffer.byteLength(gg, 'utf8')
-console.log("Total string length in bytes: ", bb)
+// bb = Buffer.byteLength(gg, 'utf8')
+// console.log("Total string length in bytes: ", bb)
 
 
 
