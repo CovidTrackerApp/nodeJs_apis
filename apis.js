@@ -358,7 +358,10 @@ app.get("/check_me/:uname", async (req, res) => {
 
             values.push(hash);
         });
-        console.log(values); 
+        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, values]);
+
+        console.log(values);
+        res.json("Query executed successfully"); 
         // res.json(query.rows);
         // p_ids.forEach(element => {
         //     // console.log(element.patient_key);
