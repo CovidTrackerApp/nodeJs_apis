@@ -345,7 +345,7 @@ app.get("/check_me/:uname", async (req, res) => {
         var p_ids = query.rows;
         var values = new Array();
         p_ids.forEach(element => {
-            values.push(element);
+            values.push(element.patient_key);
         });
         console.log(values); 
         // res.json(query.rows);
