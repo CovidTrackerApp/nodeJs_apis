@@ -343,7 +343,11 @@ app.get("/check_me/:uname", async (req, res) => {
         ///////////////////////////////////////////////////////
         const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
         var p_ids = query.rows;
-        console.log(p_ids) 
+        var values = new Array();
+        p_ids.forEach(element => {
+            values.push(element);
+        });
+        console.log(values); 
         // res.json(query.rows);
         // p_ids.forEach(element => {
         //     // console.log(element.patient_key);
