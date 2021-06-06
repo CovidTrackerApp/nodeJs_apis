@@ -249,7 +249,7 @@ app.post("/patient_data_2", upload5.single("patientcsv_2"), async (req, res) => 
         const {name} = req.body;
         // const {sender} = req.body;
         
-        const query = await client.query(`COPY patient_data_2 (uname, date, time, patient_key, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        // const query = await client.query(`COPY patient_data_2 (uname, date, time, patient_key, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
         const query2 = await client.query(`COPY user_status (uname, date, time, status) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
 
