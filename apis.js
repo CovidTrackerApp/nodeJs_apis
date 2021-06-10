@@ -406,7 +406,6 @@ app.get("/del_pat_data", async (req, res) => {
 // })
 
 // Check patient V3
-
 app.get("/check_me/:uname", async (req, res) => {
     try {
         
@@ -416,7 +415,7 @@ app.get("/check_me/:uname", async (req, res) => {
         let d =  new Date()
         // let dd = dateFormat(d, "mm/dd/yyyy");
         let ddd = new Date(d);
-        let gg = ddd.setDate(ddd.getDate() - 7);
+        let gg = ddd.setDate(ddd.getDate() - 30);
         gg = new Date(gg)
 
         let dd = dateFormat(gg, "mm/dd/yyyy");
