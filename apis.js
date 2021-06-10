@@ -320,6 +320,9 @@ app.get("/del_pat_data", async (req, res) => {
 //     }
 // })
 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
 // check covid tracing V2.
 // app.get("/check_me/:uname", async (req, res) => {
 //     try {
@@ -405,90 +408,56 @@ app.get("/del_pat_data", async (req, res) => {
 //     }
 // })
 
-// Check patient V3
-app.get("/check_me/:uname", async (req, res) => {
-    try {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// // Check patient V3
+// app.get("/check_me/:uname", async (req, res) => {
+//     try {
         
-        const {uname} = req.params;
-        // let d =  new Date().slice(4, 15);
+//         const {uname} = req.params;
+//         // let d =  new Date().slice(4, 15);
 
-        let d =  new Date()
-        // let dd = dateFormat(d, "mm/dd/yyyy");
-        let ddd = new Date(d);
-        let gg = ddd.setDate(ddd.getDate() - 30);
-        gg = new Date(gg)
+//         let d =  new Date()
+//         // let dd = dateFormat(d, "mm/dd/yyyy");
+//         let ddd = new Date(d);
+//         let gg = ddd.setDate(ddd.getDate() - 30);
+//         gg = new Date(gg)
 
-        let dd = dateFormat(gg, "mm/dd/yyyy");
+//         let dd = dateFormat(gg, "mm/dd/yyyy");
         
-        console.log(uname);
-        console.log(d);
-        // dd = "05/18/2021"
-        console.log(dd);
+//         console.log(uname);
+//         console.log(d);
+//         // dd = "05/18/2021"
+//         console.log(dd);
         
-        ///////////////////////////////////////////////////////
-        const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
-        var p_ids = query.rows;
-        var values = new Array();
-        // p_ids.forEach(element => {
-        //     values.push(element.patient_key);
-        // });
-        // console.log(values); 
-        p_ids.forEach(element => {
-            const str = element.patient_key;
-            const secret = "_6iL"
-            const sha256Hasher = crypto.createHmac("sha256", secret);
-            const hash = sha256Hasher.update(str).digest("hex");
-            // console.log(hash); 
-            // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, hash]);
+//         ///////////////////////////////////////////////////////
+//         const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
+//         var p_ids = query.rows;
+//         var values = new Array();
+//         // p_ids.forEach(element => {
+//         //     values.push(element.patient_key);
+//         // });
+//         // console.log(values); 
+//         p_ids.forEach(element => {
+//             const str = element.patient_key;
+//             const secret = "_6iL"
+//             const sha256Hasher = crypto.createHmac("sha256", secret);
+//             const hash = sha256Hasher.update(str).digest("hex");
+//             // console.log(hash); 
+//             // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, hash]);
 
-            values.push(hash);
-        });
-        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd]);
+//             values.push(hash);
+//         });
+//         const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd]);
 
-        console.log(values);
-        res.json(query2.rows); 
-        // res.json(query.rows);
-        // p_ids.forEach(element => {
-        //     // console.log(element.patient_key);
-        //     // const str = "d18483a7937babdc6e65c7848404dcc263c70ad3649d805fd12032abc288e145";
-        //     const str = element.patient_key;
-        //     const secret = "_6iL"
-        //     const sha256Hasher = crypto.createHmac("sha256", secret);
-        //     const hash = sha256Hasher.update(str).digest("hex");
-        //     console.log(hash); 
-        //     // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, hash]);
+//         console.log(values);
+//         res.json(query2.rows); 
 
-        // });
-
-        
-        //////////////////////////////////////// Generating HASH ///////////////////////////////////////////
-        
-        // const str = "d18483a7937babdc6e65c7848404dcc263c70ad3649d805fd12032abc288e145";
-        // // secret or salt to be hashed with
-        // const secret = "_6iL";
-        // // create a sha-256 hasher
-        // const sha256Hasher = crypto.createHmac("sha256", secret);
-        // // hash the string
-        // const hash = sha256Hasher.update(str).digest("hex");
-        // console.log(hash); 
-
-
-        ////////////////////////////////////////////////////////////////////////////////
-        
-        //const query = await client.query("SELECT * FROM patient_data, users, sensor_data2 INNER JOIN users on sensor_data2.uname=users.name WHERE sensor_data12.uname=$1", [uname]);
-        // SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.uname=users.name WHERE sensor_data12.uname=$1
-        // working. 
-        // const query = await client.query("SELECT * FROM bt_data INNER JOIN patient_data on patient_data.deviceid=bt_data.deviceid WHERE bt_data.uname=$1 AND bt_data.date > $2", [uname, dd]);
-        // const query = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data.deviceid=bt_data.deviceid WHERE bt_data.uname=$1 AND bt_data.date > $2 AND patient_data.result='yes'", [uname, dd]);
-        // const query = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd]);
-
-        // // res.json("query.rows[0]");
-        // res.json(query.rows);  
     
-    } catch (error) {
-        console.error(error.message);
-    }
-})
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// })
 
 
 // database connection here. //
