@@ -454,8 +454,8 @@ app.get("/check_me/:uname", async (req, res) => {
             values.push(hash);
         });
         // working query2 below
-        // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [uname, dd]);
-        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
+        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [uname, dd]);
+        // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
 
 
         console.log("This is query 1 result : ",  values);
