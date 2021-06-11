@@ -422,7 +422,7 @@ app.get("/check_me/:uname", async (req, res) => {
         let d =  new Date()
         // let dd = dateFormat(d, "mm/dd/yyyy");
         let ddd = new Date(d);
-        let gg = ddd.setDate(ddd.getDate() - 30);
+        let gg = ddd.setDate(ddd.getDate() - 8);
         gg = new Date(gg)
 
         let dd = dateFormat(gg, "mm/dd/yyyy");
