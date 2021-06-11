@@ -457,16 +457,16 @@ app.get("/check_me/:uname", async (req, res) => {
         // var result = query2.rows[0].patient_key;
         console.log("HIIII: ", query2.rows[0]);
         // res.json(query2.rows);
-        // if (result != null){
-        //     res.json("Interation found");
-        // }
-        // else {
-        //     res.json("No interaction found");
-        // }
-        res.json({
-            "results": "query2.rows",
-            "status" : 200
-        }); 
+        if (query2.rows[0] != null){
+            res.json("Interation found");
+        }
+        else {
+            res.json("No interaction found");
+        }
+        // res.json({
+        //     "results": "query2.rows",
+        //     "status" : 200
+        // }); 
 
     
     } catch (error) {
