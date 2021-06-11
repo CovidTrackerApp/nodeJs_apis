@@ -455,7 +455,7 @@ app.get("/check_me/:uname", async (req, res) => {
 
         console.log("This is query 1 result : ",  values);
         // var result = query2.rows[0].patient_key;
-        console.log("HIIII: ", query2.rows[0]);
+        console.log("HIIII: ", query2.rows);
         // res.json(query2.rows);
         /////////// working logic down
         // if (query2.rows[0] != null){
@@ -474,12 +474,12 @@ app.get("/check_me/:uname", async (req, res) => {
         // }
         /////////////// end here
         if (query2.rows[0] != null){
-            res.json("Yes"); 
+            res.json("Yes");   //  Interaction found
             // res.json("Interation found");
         }
         else {
             // res.json("No interaction found");
-            res.json("No"); 
+            res.json("No");  ///   Interaction Not found
         }
     
     } catch (error) {
