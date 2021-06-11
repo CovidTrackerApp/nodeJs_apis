@@ -455,7 +455,7 @@ app.get("/check_me/:uname", async (req, res) => {
 
         console.log("This is query 1 result : ",  values);
         // var result = query2.rows[0];
-        console.log("HIIII: ", query.rows[0]);
+        console.log("HIIII: ", query.rows[0].patient_key);
         // res.json(query2.rows);
         // if (res.json(query2.rows) != null){
         //     res.json("Interation found");
