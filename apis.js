@@ -425,7 +425,9 @@ app.get("/check_me/:uname", async (req, res) => {
         let gg = ddd.setDate(ddd.getDate() - 8);
         gg = new Date(gg)
 
-        let dd = dateFormat(gg, "mm/dd/yyyy");
+        // let dd = dateFormat(gg, "mm/dd/yyyy");
+        // date oper thk hai.
+        let dd = dateFormat(gg, "yyyy/mm/dd");
         
         console.log(uname);
         console.log(d);
