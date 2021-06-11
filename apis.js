@@ -454,8 +454,8 @@ app.get("/check_me/:uname", async (req, res) => {
         const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd]);
 
         console.log("This is query 1 result : ",  values);
-        var result = query2.rows[0];
-        console.log(result);
+        // var result = query2.rows[0];
+        console.log("HIIII: ", query.rows[0]);
         // res.json(query2.rows);
         // if (res.json(query2.rows) != null){
         //     res.json("Interation found");
