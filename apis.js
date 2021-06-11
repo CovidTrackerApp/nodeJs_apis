@@ -455,16 +455,16 @@ app.get("/check_me/:uname", async (req, res) => {
 
         console.log("This is query 1 result : ",  values);
         // res.json(query2.rows);
-        if (res.json(query2.rows) != null){
-            res.json("Interation found");
-        }
-        else {
-            res.json("No interaction found");
-        }
-        // res.json({
-        //     "results": query2.rows,
-        //     "" : 
-        // }); 
+        // if (res.json(query2.rows) != null){
+        //     res.json("Interation found");
+        // }
+        // else {
+        //     res.json("No interaction found");
+        // }
+        res.json({
+            "results": "query2.rows",
+            "status" : 200
+        }); 
 
     
     } catch (error) {
