@@ -22,6 +22,8 @@ const hash = sha256Hasher.update(str).digest("hex");
 console.log(hash); // d22101d5d402ab181a66b71bb950ff2892f6d2a1e436d61c4fb1011e9c49a77a
 let bb = Buffer.from(secret);
 console.log("This is salt in bytes: ", bb); 
+
+
 // for(var ll in bb){
 //     console.log(ll);    
 // }

@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const client = require("./db");
 const cors = require("cors");
 const multer = require("multer");
+const bcrypt = require('bcrypt');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -80,16 +81,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());   // req.body()
 
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
 
 // ROUTES ///
-
-// create 1st route:
-
+// create registeration route:
 app.post("/register", async(req, res) => {
     
     try {
         // console.log(req.body);
-        
         const {uname} = req.body;
         const {password} = req.body;
         const {ph_no} = req.body;
@@ -97,10 +97,17 @@ app.post("/register", async(req, res) => {
         const {age} = req.body;
         const {gender} = req.body;
         const {status} = req.body;
+        const {u_beaconid} = req.body;
+
+        const pass_hash = bcrypt.hashSync(password, salt);
+
+        const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
         
-        const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, password, ph_no, email, age, gender, status]);
-        
-        res.json(query.rows[0]);  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
+        res.status(200).json({
+            "msg": query.rows[0],
+            "u_beaconid": u_beaconid,
+            "status" : 200
+        });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
 
 
     } catch (error) {
@@ -425,9 +432,9 @@ app.get("/check_me/:uname", async (req, res) => {
         let gg = ddd.setDate(ddd.getDate() - 8);
         gg = new Date(gg)
 
-        // let dd = dateFormat(gg, "mm/dd/yyyy");
+        let dd = dateFormat(gg, "mm/dd/yyyy");
         // date oper thk hai.
-        let dd = dateFormat(gg, "yyyy/mm/dd");
+        // let dd = dateFormat(gg, "yyyy/mm/dd");
         
         console.log(uname);
         console.log(d);
