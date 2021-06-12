@@ -26,7 +26,6 @@ const storage2 = multer.diskStorage({
 
 });
 
-
 const storage3 = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'uploads/Patient_Data/')
@@ -81,9 +80,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());   // req.body()
 
-const saltRounds = 10;
-const salt = bcrypt.genSaltSync(saltRounds);
-
 // ROUTES ///
 // create registeration route:
 app.post("/register", async(req, res) => {
@@ -98,6 +94,9 @@ app.post("/register", async(req, res) => {
         const {gender} = req.body;
         const {status} = req.body;
         const {u_beaconid} = req.body;
+
+        const saltRounds = 10;
+        const salt = bcrypt.genSaltSync(saltRounds);
 
         const pass_hash = bcrypt.hashSync(password, salt);
 
