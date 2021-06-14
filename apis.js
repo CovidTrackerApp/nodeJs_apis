@@ -109,27 +109,36 @@ app.post("/register", async(req, res) => {
 
         const pass_hash = bcrypt.hashSync(password, salt);
 
-        const query2 = await client.query("SELECT * FROM users WHERE uname = $1", [uname], (err, results) => {
+        // const query2 = await client.query("SELECT * FROM users WHERE uname = $1", [uname], (err, results) => {
+        client.query("SELECT * FROM users WHERE uname = $1", [uname], (err, results) => {
             if (err) { 
                 throw err;
             }
             console.log(result.rows);
 
             if (results.rows.length > 0) {
-                res.status(200).json({
+                results.status(200).json({
                     "msg": "User is already registered", 
                     "status" : 302
                 });
             } 
             else {
-                const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-        
-                res.status(200).json({
-                    "msg": query.rows[0],
-                    "u_beaconid": u_beaconid,
-                    "status" : 200
-                });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
-            }
+                // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
+                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid],
+                (err, results) => {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        results.status(200).json({
+                            "msg": results.rows[0],
+                            "u_beaconid": u_beaconid,
+                            "status" : 200
+                        });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
+                
+                    }
+                });
+                }
         });
 
         // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
