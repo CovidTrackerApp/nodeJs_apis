@@ -95,6 +95,15 @@ app.post("/register", async(req, res) => {
         const {status} = req.body;
         const {u_beaconid} = req.body;
 
+        let errors = [];
+        
+        if (!uname || !password || !ph_no || !email || !age || !gender) {
+            res.status(200).json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
+
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
 
