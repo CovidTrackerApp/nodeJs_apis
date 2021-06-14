@@ -117,7 +117,7 @@ app.post("/register", async(req, res) => {
             console.log(results.rows);
 
             if (results.rows.length > 0) {
-                results.status(200).json({
+                results.json({
                     "msg": "User is already registered", 
                     "status" : 302
                 });
@@ -130,7 +130,7 @@ app.post("/register", async(req, res) => {
                         throw err;
                     }
                     else {
-                        results.status(200).json({
+                        results.json({
                             "msg": results.rows[0],
                             "u_beaconid": u_beaconid,
                             "status" : 200
