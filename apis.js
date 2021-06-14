@@ -114,7 +114,7 @@ app.post("/register", async(req, res) => {
             if (err) { 
                 throw err;
             }
-            console.log(result.rows);
+            console.log(results.rows);
 
             if (results.rows.length > 0) {
                 results.status(200).json({
