@@ -204,17 +204,35 @@ app.post("/login", async(req, res) => {
                         if (isMatch) {
                             
                             email = user.email;
-                            verificationCode = user.otp;
+                            // generate OTP
+                            function randomNum(min, max) {
+                                return Math.floor(Math.random() * (max - min) + min)
+                            }
+
+                            const verificationCode = randomNum(10000, 99999);
+                            // verificationCode = user.otp;
 
                             // send Verification Code via email. 
                             sendEmail(verificationCode, email);
 
-                            res.json({
-                                "msg": "User authenticated", 
-                                "status" : 200,
-                                "u_beaconid" : user.u_beaconid
+                            client.query("UPDATE users SET otp=$1 WHERE uname=$2", [verificationCode, uname], (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+
+                                res.json({
+                                    "msg": "User authenticated", 
+                                    "status" : 200,
+                                    "u_beaconid" : user.u_beaconid
+                                });
+
                             });
-                            // return done(null, user);
+
+                            // res.json({
+                            //     "msg": "User authenticated", 
+                            //     "status" : 200,
+                            //     "u_beaconid" : user.u_beaconid
+                            // });
                         }
                         else {
                             res.json({
