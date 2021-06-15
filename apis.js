@@ -236,11 +236,10 @@ app.get("/users/:id", async(req, res) => {
 // update user.
 app.put("/users/:id", async (req, res) => {
     try {
-        const {id} = req.params;
-        const {name} = req.body;
+        const {uname} = req.params;
         const {ph_no} = req.body;
 
-        const query = await client.query("UPDATE users SET name=$1, ph_no=$2 WHERE id=$3", [name, ph_no, id]);
+        const query = await client.query("UPDATE users SET uname=$1, ph_no=$2 WHERE id=$3", [uname, ph_no]);
         
         res.json("Data updated successfully!");
 
@@ -251,9 +250,9 @@ app.put("/users/:id", async (req, res) => {
 
 app.delete("/users/:id", async (req, res) => {
     try {
-        const {id} = req.params;
+        const {uname} = req.params;
         
-        const query = await client.query("DELETE FROM users WHERE id=$1", [id]);
+        const query = await client.query("DELETE FROM users WHERE uname=$1", [uname]);
         // res.json("Data was deleted.");
         res.json(query.rows);
 
