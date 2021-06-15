@@ -29,4 +29,4 @@ function sendEmail(verification_otp, receiver) {
 
 }
 
-module.exports.sendEmail = sendMail;
+module.exports.sendEmail = sendEmail;
