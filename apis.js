@@ -238,7 +238,7 @@ app.post("/login", async(req, res) => {
 })
 
 // verify OTP
-app.get("/verifyOTP", async(req, res) => {
+app.post("/verifyOTP", async(req, res) => {
     try {
 
         const {uname} = req.body;
