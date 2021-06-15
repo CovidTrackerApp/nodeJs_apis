@@ -186,11 +186,17 @@ app.post("/login", async(req, res) => {
                             // return done(null, user);
                         }
                         else {
-                            return done(null, false, {message: "passport is not correct"});
+                            res.json({
+                                "msg": "Password is not correct", 
+                                "status" : 301
+                            });
                         }
                     });
                 } else {
-                    return done(null, false, {message: "Username is not registered"});
+                    res.json({
+                        "msg": "Username is not registered", 
+                        "status" : 301
+                    });
                 }
                 
             });
