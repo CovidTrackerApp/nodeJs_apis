@@ -424,6 +424,22 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
     }
 })
 
+// // upload beacon_scan data
+// app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
+//     try {
+//         console.log(req.file);
+//         // const {name} = req.body;
+//         // const {sender} = req.body;
+        
+//         const query = await client.query(`COPY beacon_scan (uname, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+
+//         res.json("Query executed succesfully");
+    
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// })
+
 // upload beacon_scan data
 app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
     try {
@@ -431,7 +447,7 @@ app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
         // const {name} = req.body;
         // const {sender} = req.body;
         
-        const query = await client.query(`COPY beacon_scan (uname, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        const query = await client.query(`COPY beacon_scan (token, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
         res.json("Query executed succesfully");
     
@@ -610,11 +626,13 @@ app.get("/del_pat_data", async (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Check patient V3
-app.get("/check_me/:uname", async (req, res) => {
+// Check patient : This one is working. 
+// app.get("/check_me/:uname", async (req, res) => {
+app.get("/check_me/:token", async (req, res) => {
     try {
         
-        const {uname} = req.params;
+        // const {uname} = req.params;
+        const {token} = req.params;
         // let d =  new Date().slice(4, 15);
 
         let d =  new Date()
@@ -627,7 +645,7 @@ app.get("/check_me/:uname", async (req, res) => {
         // date oper thk hai.
         let dd = dateFormat(gg, "yyyy/mm/dd");
         
-        console.log(uname);
+        console.log(token);
         console.log(d);
         // dd = "05/18/2021"
         console.log(dd);
@@ -652,7 +670,7 @@ app.get("/check_me/:uname", async (req, res) => {
             values.push(hash);
         });
         // working query2 below
-        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [uname, dd]);
+        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.token=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [token, dd]);
         // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
 
 
@@ -672,7 +690,7 @@ app.get("/check_me/:uname", async (req, res) => {
         //     // res.json("No interaction found");
         //     res.json({
         //             "result": 0,    ///   Interaction Not found
-        //             "status" : 200
+        //             "status" : 201
         //         }); 
         // }
         /////////////// end here
