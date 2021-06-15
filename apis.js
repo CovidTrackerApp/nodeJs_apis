@@ -125,14 +125,11 @@ app.post("/register", async(req, res) => {
             } 
             else {
                 // generate OTP
-                crypto.randomInt(0, 100000, (err, n) => {
-                    if (err) {
-                        throw err;
-                    }
-                    console.log(n);
-                    const verificationCode = n.toString().padStart(5, "0");
+                function randomNum(min, max) {
+                    return Math.floor(Math.random() * (max - min) + min)
+                }
 
-                });
+                const verificationCode = randomNum(10000, 99999);
                 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
                 client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
