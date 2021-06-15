@@ -234,7 +234,7 @@ app.get("/users/:id", async(req, res) => {
 })
 
 // update user.
-app.put("/users/:id", async (req, res) => {
+app.put("/users/:uname", async (req, res) => {
     try {
         const {uname} = req.params;
         const {ph_no} = req.body;
@@ -248,7 +248,7 @@ app.put("/users/:id", async (req, res) => {
     }
 })
 
-app.delete("/users/:id", async (req, res) => {
+app.delete("/users/:uname", async (req, res) => {
     try {
         const {uname} = req.params;
         
