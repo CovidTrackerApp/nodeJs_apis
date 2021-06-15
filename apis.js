@@ -6,6 +6,8 @@ const cors = require("cors");
 const multer = require("multer");
 const bcrypt = require('bcrypt');
 const sendEmail = require("./send_mail");
+const { query } = require("express");
+const {uuid} = require("uuidv4");
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -131,12 +133,15 @@ app.post("/register", async(req, res) => {
                 }
 
                 const verificationCode = randomNum(10000, 99999);
-
+                
                 // send Verification Code via email. 
                 sendEmail(verificationCode, email);    
                 
+                // token
+                uid = uuid();
+
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
+                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname, uid],
                 (err, results) => {
                     if (err) {
                         throw err;
@@ -174,6 +179,13 @@ app.post("/login", async(req, res) => {
         const {uname} = req.body;
         const {password} = req.body;
 
+        if (!uname || !password) {
+            res.status(200).json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
+
         client.query("SELECT * FROM users WHERE uname=$1", [uname], (err, results) => {
                 if (err) {
                     throw err;
@@ -207,14 +219,14 @@ app.post("/login", async(req, res) => {
                         else {
                             res.json({
                                 "msg": "Password is not correct", 
-                                "status" : 301
+                                "status" : 302
                             });
                         }
                     });
                 } else {
                     res.json({
                         "msg": "Username is not registered", 
-                        "status" : 301
+                        "status" : 303
                     });
                 }
                 
@@ -224,6 +236,59 @@ app.post("/login", async(req, res) => {
         console.error(error.message);
     }
 })
+
+// verify OTP
+app.get("/verifyOTP", async(req, res) => {
+    try {
+
+        const {uname} = req.body;
+        const {otp} = req.body;
+
+        if (!uname || !otp) {
+            res.status(200).json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
+        
+        client.query("SELECT * FROM users WHERE uname=$1", [uname], (err, results) => {
+            if (err) {
+                throw err;
+            }
+
+            console.log(results.rows);
+
+            if (results.rows.length > 0) {
+                const user = results.rows[0];
+                db_otp = user.otp;
+
+                if (otp == db_otp) {
+                    res.json({
+                        "u_beaconid": user.u_beaconid,
+                        "token" : user.token,
+                        "status" : 200
+                    });
+                }
+                else {
+                    res.json({
+                        "msg": "otp didn't match, try again!",
+                        "status" : 303
+                    });
+                } 
+            }
+            else {
+                res.json({
+                    "msg": "Username is not registered", 
+                    "status" : 303
+                });
+            }
+            
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 
 // get all the user data
 app.get("/users", async(req, res) => {
