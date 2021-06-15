@@ -138,7 +138,7 @@ app.post("/register", async(req, res) => {
                 
                     }
                 });
-                }
+            }
         });
 
         // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
@@ -155,8 +155,52 @@ app.post("/register", async(req, res) => {
     }
 })
 
-// get all the user data
+// Login.
+app.post("/login", async(req, res) => {
+    try {
 
+        const {uname} = req.body;
+        const {password} = req.body;
+
+        client.query("SELECT * FROM users WHERE uname=$1", [uname], (err, results) => {
+                if (err) {
+                    throw err;
+                }
+
+                console.log(results.rows);
+
+                if (results.rows.length > 0) {
+                    const user = results.rows[0];
+                
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) {
+                            throw err;
+                        }
+
+                        if (isMatch) {
+                            res.json({
+                                "msg": "User authenticated", 
+                                "status" : 200,
+                                "u_beaconid" : user.u_beaconid
+                            });
+                            // return done(null, user);
+                        }
+                        else {
+                            return done(null, false, {message: "passport is not correct"});
+                        }
+                    });
+                } else {
+                    return done(null, false, {message: "Username is not registered"});
+                }
+                
+            });
+
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+// get all the user data
 app.get("/users", async(req, res) => {
     try {
         const allUsers = await client.query("SELECT * FROM users");
