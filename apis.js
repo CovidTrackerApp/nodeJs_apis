@@ -5,6 +5,7 @@ const client = require("./db");
 const cors = require("cors");
 const multer = require("multer");
 const bcrypt = require('bcrypt');
+const sendMail = require("./send_mail");
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -130,6 +131,9 @@ app.post("/register", async(req, res) => {
                 }
 
                 const verificationCode = randomNum(10000, 99999);
+
+                // send Verification Code via email. 
+                sendMail(verificationCode, email);    
                 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
                 client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
