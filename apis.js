@@ -190,6 +190,13 @@ app.post("/login", async(req, res) => {
                         }
 
                         if (isMatch) {
+                            
+                            email = user.email;
+                            verificationCode = user.otp;
+
+                            // send Verification Code via email. 
+                            sendEmail(verificationCode, email);
+
                             res.json({
                                 "msg": "User authenticated", 
                                 "status" : 200,
