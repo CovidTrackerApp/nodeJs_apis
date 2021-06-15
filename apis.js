@@ -132,7 +132,7 @@ app.post("/register", async(req, res) => {
                     console.log(n);
                     const verificationCode = n.toString().padStart(5, "0");
 
-                })
+                });
                 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
                 client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
