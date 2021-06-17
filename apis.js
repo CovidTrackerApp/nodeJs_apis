@@ -308,7 +308,7 @@ app.post("/verifyOTP", async(req, res) => {
 })
 
 // send verification code when user forget password
-app.post("/verifyuser", async(req, res) => {
+app.post("/sendotpviaemail", async(req, res) => {
     try {
 
         const {email} = req.body;
@@ -367,6 +367,59 @@ app.post("/verifyuser", async(req, res) => {
     }
 })
 
+// verify user OTP for resetting his password. 
+app.post("/verifyuserotp", async(req, res) => {
+    try {
+
+        const {email} = req.body;
+        email = email.toLowerCase();
+        const {otp} = req.body;
+
+        if (!email || !otp) {
+            res.status(200).json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
+        
+        client.query("SELECT * FROM users WHERE email=$1", [email], (err, results) => {
+            if (err) {
+                throw err;
+            }
+
+            console.log(results.rows);
+
+            if (results.rows.length > 0) {
+                const user = results.rows[0];
+                db_otp = user.otp;
+
+                if (otp != db_otp) {
+                    res.json({
+                        "msg": "OTP didn't match, try again", 
+                        "status" : 302
+                    });
+
+                }
+
+                res.json({
+                    "msg": "OTP matched successfully", 
+                    "status" : 200
+                });
+                
+            }
+            else {
+                res.json({
+                    "msg": "No such user is registered.", 
+                    "status" : 303
+                });
+            }
+            
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 
 // forget password
 app.post("/forgetpass", async(req, res) => {
@@ -398,8 +451,8 @@ app.post("/forgetpass", async(req, res) => {
             console.log(results.rows);
 
             if (results.rows.length > 0) {
-                // const user = results.rows[0];
-                // db_otp = user.otp;
+                const user = results.rows[0];
+                db_otp = user.otp;
 
                 client.query("UPDATE users SET password=$1 WHERE email=$2", [new_password, email], (err, results) => {
                     if (err) {
