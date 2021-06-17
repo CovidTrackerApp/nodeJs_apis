@@ -307,6 +307,125 @@ app.post("/verifyOTP", async(req, res) => {
     }
 })
 
+// send verification code when user forget password
+app.post("/verifyuser", async(req, res) => {
+    try {
+
+        const {email} = req.body;
+        email = email.toLowerCase();
+
+        if (!email) {
+            res.status(200).json({
+                "msg": "Please provide your email", 
+                "status" : 301
+            });
+        }
+        
+        client.query("SELECT * FROM users WHERE email=$1", [email], (err, results) => {
+            if (err) {
+                throw err;
+            }
+
+            console.log(results.rows);
+
+            if (results.rows.length > 0) {
+                const user = results.rows[0];
+                db_email = user.email;
+                // generate new OTP
+                function randomNum(min, max) {
+                    return Math.floor(Math.random() * (max - min) + min)
+                }
+
+                const verificationCode = randomNum(10000, 99999);
+                // verificationCode = user.otp;
+
+                // send Verification Code via email. 
+                sendEmail(verificationCode, db_email);
+
+                client.query("UPDATE users SET otp=$1 WHERE email=$2", [verificationCode, db_email], (err, results) => {
+                    if (err) {
+                        throw err;
+                    }
+
+                    res.json({
+                        "msg": "verification code for reset password is sent to the email.", 
+                        "status" : 200
+                    });
+
+                });
+            }
+            else {
+                res.json({
+                    "msg": "No such email is registered.", 
+                    "status" : 303
+                });
+            }
+            
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
+// forget password
+app.post("/forgetpass", async(req, res) => {
+    try {
+
+        const {email} = req.body;
+        const {new_password} = req.body;
+        const {confirm_password} = req.body;       
+
+        if (!email || !new_password || !confirm_password) {
+            res.json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
+
+        if (new_password != confirm_password) {
+            res.json({
+                "msg": "new password didn't match confirm password", 
+                "status" : 302
+            });
+        }
+        
+        client.query("SELECT * FROM users WHERE email=$1", [email], (err, results) => {
+            if (err) {
+                throw err;
+            }
+
+            console.log(results.rows);
+
+            if (results.rows.length > 0) {
+                // const user = results.rows[0];
+                // db_otp = user.otp;
+
+                client.query("UPDATE users SET password=$1 WHERE email=$2", [new_password, email], (err, results) => {
+                    if (err) {
+                        throw err;
+                    }
+
+                    res.json({
+                        "msg": "User password has been updated", 
+                        "status" : 200
+                    });
+
+                });
+            }
+            else {
+                res.json({
+                    "msg": "Username is not registered", 
+                    "status" : 303
+                });
+            }
+            
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 
 // get all the user data
 app.get("/users", async(req, res) => {
