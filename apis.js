@@ -311,7 +311,7 @@ app.post("/verifyOTP", async(req, res) => {
 app.post("/sendotpviaemail", async(req, res) => {
     try {
 
-        const {email} = req.body;
+        let {email} = req.body;
         email = email.toLowerCase();
 
         if (!email) {
@@ -371,7 +371,7 @@ app.post("/sendotpviaemail", async(req, res) => {
 app.post("/verifyuserotp", async(req, res) => {
     try {
 
-        const {email} = req.body;
+        let {email} = req.body;
         email = email.toLowerCase();
         const {otp} = req.body;
 
