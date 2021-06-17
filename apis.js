@@ -862,7 +862,7 @@ app.get("/check_me/:token", async (req, res) => {
         no_interactions = []
         contacts.forEach(element => {
             const bea = element.beaconid_others;
-            values.push(bea);
+            no_interactions.push(bea);
         });
         
 
