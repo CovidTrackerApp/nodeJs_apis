@@ -454,7 +454,12 @@ app.post("/forgetpass", async(req, res) => {
                 const user = results.rows[0];
                 db_otp = user.otp;
 
-                client.query("UPDATE users SET password=$1 WHERE email=$2", [new_password, email], (err, results) => {
+                const saltRounds = 10;
+                const salt = bcrypt.genSaltSync(saltRounds);
+
+                const pass_hash = bcrypt.hashSync(new_password, salt);
+
+                client.query("UPDATE users SET password=$1 WHERE email=$2", [pass_hash, email], (err, results) => {
                     if (err) {
                         throw err;
                     }
