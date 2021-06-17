@@ -6,7 +6,6 @@ const cors = require("cors");
 const multer = require("multer");
 const bcrypt = require('bcrypt');
 const sendEmail = require("./send_mail");
-const { query } = require("express");
 const {uuid} = require("uuidv4");
 
 const storage = multer.diskStorage({
@@ -857,6 +856,16 @@ app.get("/check_me/:token", async (req, res) => {
         console.log("This is query 1 result : ",  values);
         // var result = query2.rows[0].patient_key;
         console.log("HIIII: ", query2.rows);
+
+        let contacts = query2.rows;
+
+        no_interactions = []
+        contacts.forEach(element => {
+            const bea = element.beaconid_others;
+            values.push(bea);
+        });
+        
+
         // res.json(query2.rows);
         /////////// working logic down
         // if (query2.rows[0] != null){
