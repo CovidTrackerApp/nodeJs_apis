@@ -98,6 +98,12 @@ app.post("/register", async(req, res) => {
         const {u_beaconid} = req.body;
         const {fname} = req.body;
 
+        let d =  new Date()
+        let c_date = dateFormat(d, "mm/dd/yyyy");
+
+        let time = Date().slice(15, 24);
+        let hospital_uid = 0;
+
         let errors = [];
         
         if (!uname || !password || !ph_no || !email || !age || !gender) {
@@ -137,21 +143,29 @@ app.post("/register", async(req, res) => {
                 sendEmail(verificationCode, email);    
                 
                 // token
-                uid = uuid();
+                // uid = uuid();
 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname, uid],
+                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
                 (err, results) => {
                     if (err) {
                         throw err;
                     }
                     else {
-                        res.json({
-                            "msg": results.rows[0],
-                            "u_beaconid": u_beaconid,
-                            "status" : 200
-                        });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
-                
+                        // client.query("INSERT INTO user_status (uname, date, time, status, hospital_uid) VALUES ($1, $2, $3, $4, $5)", [uname, c_date, time, status, hospital_uid],
+                        client.query("INSERT INTO user_status (uname, date, time, patient_beacon, hospital_uid, status) VALUES ($1, $2, $3, $4, $5, $6)", [uname, c_date, time, u_beaconid, hospital_uid, status],
+                        (err, results) => {
+                            if (err) {
+                                throw err;
+                            }
+                            else{
+                                res.json({
+                                    "msg": results.rows[0],
+                                    "u_beaconid": u_beaconid,
+                                    "status" : 200
+                                });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
+                            }       
+                        });
                     }
                 });
             }
@@ -282,7 +296,7 @@ app.post("/verifyOTP", async(req, res) => {
                 if (otp == db_otp) {
                     res.json({
                         "u_beaconid": user.u_beaconid,
-                        "token" : user.token,
+                        "token" : user.uname,
                         "status" : 200
                     });
                 }
@@ -542,11 +556,9 @@ app.delete("/users/:uname", async (req, res) => {
 // upload sensors data. 
 app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
     try {
-        console.log(req.file);
-        const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
         // const query = await client.query(`COPY sensor_data2(sid, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/Sensor_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
-        const query = await client.query(`COPY sensor_data2(token, date, time, lat, long, altituide, velocity, speed, acceleration) FROM '/home/ubuntu/nodeJs_apis/uploads/Sensor_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY sensor_data2(uname, date, time, lat, long, altituide, velocity, ax, ay, az, gx, gy, gz) FROM '/home/ubuntu/nodeJs_apis/uploads/Sensor_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
 
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
@@ -557,12 +569,12 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
 })
 
 // get sensor data of specific user. 
-app.get("/sensor_data/:token", async(req, res) => {
-    const {token} = req.params;
-    console.log(token);
+app.get("/sensor_data/:uname", async(req, res) => {
+    const {uname} = req.params;
+    console.log(uname);
 
     // cosnt query = await client.query("SELECT * FROM sensor_data2 INNER JOIN users on sensor_data2.uname=users.name");
-    const query = await client.query("SELECT * FROM sensor_data INNER JOIN users on sensor_data.token=users.token WHERE sensor_data.token=$1", [token]);
+    const query = await client.query("SELECT * FROM sensor_data INNER JOIN users on sensor_data2.uname=users.uname WHERE sensor_data2.uname=$1", [uname]);
     // query = await client.query("SELECT * FROM sensor_data INNER JOIN users on sensor_data.uname=users.uname WHERE sensor_data.uname=$1", [uname]);
 
     res.json(query.rows);
@@ -576,7 +588,7 @@ app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
         // const {name} = req.body;
         // const query = await client.query("COPY sensor_data FROM 'uploads/alifurqan.csv'  DELIMITER ',' CSV HEADER;");
         // const query = await client.query(`COPY bt_data(sid, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
-        const query = await client.query(`COPY bt_data(token, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
+        const query = await client.query(`COPY bt_data(uname, date, time, deviceid, rssi, distance) FROM '/home/ubuntu/nodeJs_apis/uploads/BT_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
  
         // res.json(query.rows[0]);
         res.json("query.rows[0]");  
@@ -626,7 +638,7 @@ app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
         // const {name} = req.body;
         // const {sender} = req.body;
         
-        const query = await client.query(`COPY beacon_scan (token, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        const query = await client.query(`COPY beacon_scan (uname, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
         res.json("Query executed succesfully");
     
@@ -650,11 +662,11 @@ app.get("/del_beacon_data", async (req, res) => {
 // Hospital uploading data and updating status table too.
 app.post("/patient_data_2", upload5.single("patientcsv_2"), async (req, res) => {
     try {
-        console.log(req.file);
-        const {name} = req.body;
+        // console.log(req.file);
+        // const {name} = req.body;
         // const {sender} = req.body;
         
-        const query = await client.query(`COPY patient_data_2 (token, date, time, patient_key, result) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
+        const query = await client.query(`COPY patient_data_2 (uname, date, time, patient_beacon, status) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
         // const query2 = await client.query(`COPY user_status (uname, date, time, status) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
 
@@ -807,11 +819,11 @@ app.get("/del_pat_data", async (req, res) => {
 
 // Check patient : This one is working. 
 // app.get("/check_me/:uname", async (req, res) => {
-app.get("/check_me/:token", async (req, res) => {
+app.get("/check_me/:uname", async (req, res) => {
     try {
         
-        // const {uname} = req.params;
-        const {token} = req.params;
+        const {uname} = req.params;
+        // const {token} = req.params;
         // let d =  new Date().slice(4, 15);
 
         let d =  new Date()
@@ -849,7 +861,10 @@ app.get("/check_me/:token", async (req, res) => {
             values.push(hash);
         });
         // working query2 below
-        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.token=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [token, dd]);
+        // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.token=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [token, dd]);
+        // working query 3 below
+        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND user_status.status='infected'", [uname, dd]);
+        
         // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
 
 
