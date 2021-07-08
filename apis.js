@@ -103,6 +103,7 @@ app.post("/register", async(req, res) => {
 
         let time = Date().slice(15, 24);
         let hospital_uid = 0;
+        let status = "Normal";
 
         let errors = [];
         
