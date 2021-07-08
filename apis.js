@@ -94,7 +94,7 @@ app.post("/register", async(req, res) => {
         const {email} = req.body;
         const {age} = req.body;
         const {gender} = req.body;
-        const {status} = req.body;
+        // const {status} = req.body;
         const {u_beaconid} = req.body;
         const {fname} = req.body;
 
@@ -146,7 +146,7 @@ app.post("/register", async(req, res) => {
                 // uid = uuid();
 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid, verificationCode, fname],
+                client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, u_beaconid, verificationCode, fname],
                 (err, results) => {
                     if (err) {
                         throw err;
