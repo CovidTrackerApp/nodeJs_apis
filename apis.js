@@ -198,50 +198,12 @@ app.post("/register", async(req, res) => {
                                 }
                             });
                         
-                    }
-                });
-            }
-        });
+                        }
+                    });
+                }
+            });
 
-
-
-                // // generate OTP
-                // function randomNum(min, max) {
-                //     return Math.floor(Math.random() * (max - min) + min)
-                // }
-
-                // const verificationCode = randomNum(10000, 99999);
-                
-                // // send Verification Code via email. 
-                // sendEmail(verificationCode, email);    
-                
-                // // token
-                // // uid = uuid();
-
-                // // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                // client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, u_beaconid, otp, fname) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, u_beaconid, verificationCode, fname],
-                // (err, results) => {
-                //     if (err) {
-                //         throw err;
-                //     }
-                //     else {
-                //         // client.query("INSERT INTO user_status (uname, date, time, status, hospital_uid) VALUES ($1, $2, $3, $4, $5)", [uname, c_date, time, status, hospital_uid],
-                //         client.query("INSERT INTO user_status (uname, date, time, patient_beacon, hospital_uid, status) VALUES ($1, $2, $3, $4, $5, $6)", [uname, c_date, time, u_beaconid, hospital_uid, status],
-                //         (err, results) => {
-                //             if (err) {
-                //                 throw err;
-                //             }
-                //             else{
-                //                 res.json({
-                //                     "msg": results.rows[0],
-                //                     "u_beaconid": u_beaconid,
-                //                     "status" : 200
-                //                 });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
-                //             }       
-                //         });
-                //     }
-                // });
-            }
+        }
         });
 
         // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
