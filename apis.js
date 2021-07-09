@@ -569,6 +569,19 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
     }
 })
 
+// Delete sensor data. 
+app.get("/del_sensor_data", async (req, res) => {
+    try {
+        const query = await client.query("TRUNCATE TABLE sensor_data");
+
+        res.json("Query executed succesfully");
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
 // get sensor data of specific user. 
 app.get("/sensor_data/:uname", async(req, res) => {
     const {uname} = req.params;
