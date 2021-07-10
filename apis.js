@@ -596,7 +596,7 @@ app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
         const query = await client.query(`COPY sensor_data(uname, date, time, lat, long, altituide, velocity, ax, ay, az, gx, gy, gz) FROM '/home/ubuntu/nodeJs_apis/uploads/Sensor_Data/${req.file.originalname}'  DELIMITER ',' CSV HEADER;`);              
 
         // res.json(query.rows[0]);
-        res.json("query.rows[0]");  
+        res.json("Data uploaded successfully.");  
     
     } catch (error) {
         console.error(error.message);
