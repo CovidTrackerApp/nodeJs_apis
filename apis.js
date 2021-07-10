@@ -884,30 +884,30 @@ app.get("/check_me/:uname", async (req, res) => {
         // date oper thk hai.
         let dd = dateFormat(gg, "yyyy/mm/dd");
         
-        console.log(token);
+        // console.log(token);
         console.log(d);
         // dd = "05/18/2021"
         console.log(dd);
         
         ///////////////////////////////////////////////////////
         // This is perfect query. 
-        const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
-        var p_ids = query.rows;
-        var values = new Array();
+        // const query = await client.query("SELECT patient_key FROM patient_data_2 WHERE date=$1", [d])
+        // var p_ids = query.rows;
+        // var values = new Array();
+        // // p_ids.forEach(element => {
+        // //     values.push(element.patient_key);
+        // // });
+        // // console.log(values); 
         // p_ids.forEach(element => {
-        //     values.push(element.patient_key);
-        // });
-        // console.log(values); 
-        p_ids.forEach(element => {
-            const str = element.patient_key;
-            const secret = "_6iL"
-            const sha256Hasher = crypto.createHmac("sha256", secret);
-            const hash = sha256Hasher.update(str).digest("hex");
-            // console.log(hash); 
-            // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, hash]);
+        //     const str = element.patient_key;
+        //     const secret = "_6iL"
+        //     const sha256Hasher = crypto.createHmac("sha256", secret);
+        //     const hash = sha256Hasher.update(str).digest("hex");
+        //     // console.log(hash); 
+        //     // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on $3=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND patient_data_2.result='yes'", [uname, dd, hash]);
 
-            values.push(hash);
-        });
+        //     values.push(hash);
+        // });
         // working query2 below
         // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on patient_data_2.patient_key=beacon_scan.beaconid_others WHERE beacon_scan.token=$1 AND beacon_scan.date >= $2 AND patient_data_2.result='yes'", [token, dd]);
         // working query 3 below
