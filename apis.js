@@ -141,10 +141,10 @@ app.post("/register", async(req, res) => {
                         console.log(err);
                     }
                     if (result2.rows.length > 0) {
-                        errors.push({
-                        message : "Email already registered" 
+                        res.json({
+                            "msg": "Email is already registered",
+                            "status" : 303
                         });
-                        return res.render("register", { errors });
                     }
                     else {
                         // check duplicacy of ph_no
@@ -155,10 +155,10 @@ app.post("/register", async(req, res) => {
                             console.log(err);
                         }
                         if (result3.rows.length > 0) {
-                            errors.push({
-                            message : "Phone number already registered" 
+                            res.json({
+                                "msg": "Phone number is already registered",
+                                "status" : 304
                             });
-                            return res.render("register", { errors });
                         }
                         else {
                             // generate OTP
