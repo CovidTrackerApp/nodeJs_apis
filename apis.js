@@ -134,7 +134,7 @@ app.post("/register", async(req, res) => {
             } 
             else {
                 // // check duplicacy of email 
-                pool.query(`SELECT * FROM users
+                client.query(`SELECT * FROM users
                     WHERE email = $1`,
                     [email], (err, result2) => {
                     if (err) {
@@ -148,7 +148,7 @@ app.post("/register", async(req, res) => {
                     }
                     else {
                         // check duplicacy of ph_no
-                        pool.query(`SELECT * FROM users
+                        client.query(`SELECT * FROM users
                         WHERE ph_no = $1`,
                         [ph_no], (err, result3) => {
                         if (err) {
