@@ -916,7 +916,7 @@ app.get("/check_me/:uname", async (req, res) => {
         // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
 
 
-        console.log("This is query 1 result : ",  values);
+        // console.log("This is query 1 result : ",  values);
         // var result = query2.rows[0].patient_key;
         console.log("HIIII: ", query2.rows);
 
