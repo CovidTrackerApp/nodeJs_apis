@@ -874,7 +874,7 @@ app.get("/check_me/:uname", async (req, res) => {
         // const {token} = req.params;
         // let d =  new Date().slice(4, 15);
 
-        let d =  new Date()
+        let d =  new Date();
         // let dd = dateFormat(d, "mm/dd/yyyy");
         let ddd = new Date(d);
         let gg = ddd.setDate(ddd.getDate() - 8);
