@@ -579,10 +579,10 @@ app.delete("/users/:uname", async (req, res) => {
     try {
         const {uname} = req.params;
         
-        const query = await client.query("DELETE FROM users, user_status WHERE uname=$1", [uname]);
-        // const query2 = await client.query("DELETE FROM users WHERE uname=$1", [uname]);
-        // res.json("Data was deleted.");
-        res.json(query.rows);
+        const query = await client.query("DELETE FROM users WHERE uname=$1", [uname]);
+        const query2 = await client.query("DELETE FROM users_status WHERE uname=$1", [uname]);
+        res.json("User data is deleted.");
+        // res.json(query.rows);
 
     } catch (error) {
         console.error(error.message);
