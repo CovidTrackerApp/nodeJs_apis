@@ -648,7 +648,7 @@ app.get("/sensor_data/:uname", async(req, res) => {
 })
 
 // Get Sensor data for bacha
-app.get("/sensor_data/bacha", async (req, res) => {
+app.get("/sensor_data_for_bacha", async (req, res) => {
     try {
         // console.log(req.file);
         // const {name} = req.body;
