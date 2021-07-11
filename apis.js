@@ -575,6 +575,7 @@ app.put("/users/:uname", async (req, res) => {
     }
 })
 
+// delete one user
 app.delete("/users/:uname", async (req, res) => {
     try {
         const {uname} = req.params;
@@ -588,6 +589,22 @@ app.delete("/users/:uname", async (req, res) => {
         console.error(error.message);
     }
 })
+
+// delete all users
+app.delete("/users/deleteall", async (req, res) => {
+    try {
+        const {uname} = req.params;
+        
+        const query = await client.query("TRUNCATE TABLE users");
+        const query2 = await client.query("TRUNCATE TABLE user_status");
+        res.json("Users table is deleted.");
+        // res.json(query.rows);
+
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 
 // upload sensors data. 
 app.post("/upload_sensor", upload.single("sensorCsv"), async (req, res) => {
