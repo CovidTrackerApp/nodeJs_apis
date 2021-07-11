@@ -647,6 +647,23 @@ app.get("/sensor_data/:uname", async(req, res) => {
 
 })
 
+// Get Sensor data for bacha
+app.get("/sensor_data/bacha", async (req, res) => {
+    try {
+        // console.log(req.file);
+        // const {name} = req.body;
+        // const {sender} = req.body;
+        
+        const query = await client.query("SELECT * FROM sensor_data");
+
+        res.json(query.rows);
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
 // upload BT data.
 app.post("/upload_btdata", upload2.single("btcsv"), async (req, res) => {
     try {
@@ -719,6 +736,22 @@ app.get("/del_beacon_data", async (req, res) => {
         const query = await client.query("TRUNCATE TABLE beacon_scan");
 
         res.json("Query executed succesfully");
+    
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+// Get beacon_scan data for bacha
+app.get("/beacon_data/bacha", async (req, res) => {
+    try {
+        // console.log(req.file);
+        // const {name} = req.body;
+        // const {sender} = req.body;
+        
+        const query = await client.query("SELECT * FROM beacon_scan");
+
+        res.json(query.rows);
     
     } catch (error) {
         console.error(error.message);
