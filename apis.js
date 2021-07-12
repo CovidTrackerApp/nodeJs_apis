@@ -718,8 +718,6 @@ app.post("/patient_data", upload3.single("patientcsv"), async (req, res) => {
 app.post("/beacon_data", upload4.single("beaconcsv"), async (req, res) => {
     try {
         console.log(req.file);
-        // const {name} = req.body;
-        // const {sender} = req.body;
         
         const query = await client.query(`COPY beacon_scan (uname, beaconid_others, date, time, distance, u_beaconid) FROM '/home/ubuntu/nodeJs_apis/uploads/Beacon_Data/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
 
@@ -745,10 +743,7 @@ app.get("/del_beacon_data", async (req, res) => {
 // Get beacon_scan data for bacha
 app.get("/beacon_data/bacha", async (req, res) => {
     try {
-        // console.log(req.file);
-        // const {name} = req.body;
-        // const {sender} = req.body;
-        
+
         const query = await client.query("SELECT * FROM beacon_scan");
 
         res.json(query.rows);
@@ -761,9 +756,6 @@ app.get("/beacon_data/bacha", async (req, res) => {
 // Hospital uploading data and updating status table too.
 app.post("/patient_data_2", upload5.single("patientcsv_2"), async (req, res) => {
     try {
-        // console.log(req.file);
-        // const {name} = req.body;
-        // const {sender} = req.body;
         
         const query = await client.query(`COPY patient_data_2 (uname, date, time, patient_beacon, status) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
         // const query2 = await client.query(`COPY user_status (uname, date, time, status) FROM '/home/ubuntu/nodeJs_apis/uploads/Patient_Data_2/${req.file.originalname}' DELIMITER ',' CSV HEADER;`);
@@ -917,7 +909,6 @@ app.get("/del_pat_data", async (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Check patient : This one is working. 
-// app.get("/check_me/:uname", async (req, res) => {
 app.get("/check_me/:uname", async (req, res) => {
     try {
         
@@ -928,17 +919,20 @@ app.get("/check_me/:uname", async (req, res) => {
         let d =  new Date();
         // let dd = dateFormat(d, "mm/dd/yyyy");
         let ddd = new Date(d);
-        let gg = ddd.setDate(ddd.getDate() - 8);
+        let gg = ddd.setDate(ddd.getDate() - 5);
         gg = new Date(gg)
 
         // let dd = dateFormat(gg, "mm/dd/yyyy");
         // date oper thk hai.
-        let dd = dateFormat(gg, "yyyy/mm/dd");
+
+        // bhai yaad rkhna k jis format me data server par para hai usi format me hme code me bhi logic lgani hai. 
+        let dd = dateFormat(gg, "yyyy-mm-dd");
+        let current_date = dateFormat(d, "yyyy-mm-dd");
         
         // console.log(token);
         console.log(d);
         // dd = "05/18/2021"
-        console.log(dd);
+        console.log("date s:", dd);
         
         ///////////////////////////////////////////////////////
         // This is perfect query. 
@@ -965,43 +959,237 @@ app.get("/check_me/:uname", async (req, res) => {
         // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND user_status.status='Infected'", [uname, dd]);
         
         // working query 4 below for bacha
-        const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date >= $2 AND user_status.status='Infected'", [uname, dd]);
+        // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2 AND user_status.status='Infected' ORDER BY user_status.time DESC LIMIT 1", [uname, dd]);
+        
+        // working query 5 with time. IMP
+        const query2 = await client.query("SELECT DISTINCT beacon_scan.beaconid_others, user_status.status, user_status.date, user_status.time FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2", [uname, dd]);
+        
+        // working query 6 with only date. IMP
+        // const query2 = await client.query("SELECT DISTINCT beacon_scan.beaconid_others, user_status.status, user_status.date FROM beacon_scan INNER JOIN user_status on user_status.patient_beacon=beacon_scan.beaconid_others WHERE beacon_scan.uname=$1 AND beacon_scan.date > $2", [uname, dd]);
         
 
-        // const query2 = await client.query("SELECT * FROM beacon_scan INNER JOIN patient_data_2 on beacon_scan.beaconid_others=patient_data_2.patient_key");
+        // let ress = query2.rows;
+
+        // let dates_norm = [];
+        // let dates_inf = [];
+        
+        // ress.forEach(result => {
+
+        //     if (result.status == "Normal"){
+        //         dates_norm.push(result.date);
+        //         // console.log("status: ", result.status);
+        //     }
+        //     else {
+        //         dates_inf.push(result.date);
+        //         // console.log("status: ", result.status);
+        //     }
+        // });
+
+        // var maxDateNorm = new Date(Math.max.apply(null, dates_norm));
+        // var maxDateInf = new Date(Math.max.apply(null, dates_inf));
+        
+        // console.log("Max date Normal is : ", maxDateNorm);
+        // console.log("Max date infective is : ", maxDateInf);
+
+        // let timeNorm = [];
+        // let timeInf = [];
+        
+        // ress.forEach(re => {
+        //     // console.log(re.date);
+        //     if (re.date.toString() === maxDateNorm.toString()) {
+        //         // console.log(re.date);
+        //         timeNorm.push(re.time);
+        //         console.log("tt", re.time);
+        //     }
+        //     else if (re.date.toString() === maxDateInf.toString()) {
+        //         // console.log("INfective: ", re.date);
+        //         console.log("INfective time: ", re.time);
+        //         timeInf.push(re.time);
+        //     }
+        // });
+
+        // // var maxTimeN = new Date(Math.max.apply(null, timeNorm));
+        // var maxTimeN =  timeNorm.sort();
+        // maxTimeN =  maxTimeN.slice(-1);
+        
+        // var maxTimeI = timeInf.sort();
+        // maxTimeI = maxTimeI.slice(-1);
+
+        // console.log("Max Time for Normal is : ", maxTimeN[0]);
+        // console.log("Max Time for Infective is : ", maxTimeI[0]);
+
+        // ress.forEach(final => {
+        //     if ((final.date.toString() === maxDateNorm.toString()) && (final.time.toString() === maxTimeN[0])) {
+        //         console.log("Final Result: ", final.status);
+        //     } 
+        //     else if ((final.date.toString() === maxDateInf.toString()) && (final.time.toString() === maxTimeI[0])) {
+        //         console.log("Final Result: ", final.status);
+        //     }
+        // });
 
 
-        // console.log("This is query 1 result : ",  values);
-        // var result = query2.rows[0].patient_key;
+
         console.log("HIIII: ", query2.rows);
 
-        let contacts = query2.rows;
+        let ress = query2.rows;
 
-        no_interactions = []
-        contacts.forEach(element => {
-            const bea = element.beaconid_others;
-            no_interactions.push(bea);
+        // let dates_norm = [];
+        // let dates_inf = [];
+
+        let infected_list = [];
+        let infected;
+
+        ress.forEach(result => {
+
+            infected_list.push(result.status)
         });
-        
 
-        // res.json(query2.rows);
-        /////////// working logic down
-        // if (query2.rows[0] != null){
-        //     res.json({
-        //             "result": 1,    ///   Interaction found
-        //             "status" : 200
-        //     }); 
-        //     // res.json("Interation found");
+        if (infected_list.includes("Infected")) {
+            infected = true;
+        } else {
+            infected = false;
+        }
+
+        
+        // ress.forEach(result => {
+
+        //     if (result.status == "Normal"){
+        //         dates_norm.push(result.date);
+        //         console.log("status: ", result.beaconid_others);
+        //         infected = false;
+        //         console.log("No contact found!");
+
+        //     }
+        //     else {
+        //         dates_inf.push(result.date);
+        //         console.log("status: ", result.beaconid_others);
+        //         infected = true;
+        //         console.log("The person is Infected");
+                
+        //     }
+        // });
+
+        // var maxDateNorm = new Date(Math.max.apply(null, dates_norm));
+        // var maxDateInf = new Date(Math.max.apply(null, dates_inf));
+
+        
+        // console.log("Max date Normal is : ", maxDateNorm);
+        // console.log("Max date infective is : ", maxDateInf);
+
+        // if (maxDateNorm > maxDateInf) {
+        //     console.log("THis date is high");
+        //     let timeNorm = [];
+        //     let timeInf = [];
+            
+        //     ress.forEach(re => {
+        //         // console.log(re.date);
+        //         if (re.date.toString() === maxDateNorm.toString()) {
+        //             // console.log(re.date);
+        //             timeNorm.push(re.time);
+        //             console.log("tt", re.time);
+        //         }
+        //         else if (re.date.toString() === maxDateInf.toString()) {
+        //             // console.log("INfective: ", re.date);
+        //             console.log("INfective time: ", re.time);
+        //             timeInf.push(re.time);
+        //         }
+        //     });
+
+        //     // var maxTimeN = new Date(Math.max.apply(null, timeNorm));
+        //     var maxTimeN =  timeNorm.sort();
+        //     maxTimeN =  maxTimeN.slice(-1);
+            
+        //     var maxTimeI = timeInf.sort();
+        //     maxTimeI = maxTimeI.slice(-1);
+
+        //     console.log("Max Time for Normal is : ", maxTimeN[0]);
+        //     console.log("Max Time for Infective is : ", maxTimeI[0]);
+
+        //     ress.forEach(final => {
+        //         if ((final.date.toString() === maxDateNorm.toString()) && (final.time.toString() === maxTimeN[0])) {
+        //             console.log("Final Result: ", final.status);
+        //         } 
+        //         else if ((final.date.toString() === maxDateInf.toString()) && (final.time.toString() === maxTimeI[0])) {
+        //             console.log("Final Result: ", final.status);
+        //         }
+        //     });
+
         // }
-        // else {
-        //     // res.json("No interaction found");
-        //     res.json({
-        //             "result": 0,    ///   Interaction Not found
-        //             "status" : 201
+        // else{
+        //     console.log("This date is low");
+
+        //     console.log("THis date is high");
+        //     let timeNorm = [];
+        //     let timeInf = [];
+            
+        //     ress.forEach(re => {
+        //         // console.log(re.date);
+        //         if (re.date.toString() === maxDateNorm.toString()) {
+        //             // console.log(re.date);
+        //             timeNorm.push(re.time);
+        //             console.log("tt", re.time);
+        //         }
+        //         else if (re.date.toString() === maxDateInf.toString()) {
+        //             // console.log("INfective: ", re.date);
+        //             console.log("INfective time: ", re.time);
+        //             timeInf.push(re.time);
+        //         }
+        //     });
+
+        //     // var maxTimeN = new Date(Math.max.apply(null, timeNorm));
+        //     var maxTimeN =  timeNorm.sort();
+        //     maxTimeN =  maxTimeN.slice(-1);
+            
+        //     var maxTimeI = timeInf.sort();
+        //     maxTimeI = maxTimeI.slice(-1);
+
+        //     console.log("Max Time for Normal is : ", maxTimeN[0]);
+        //     console.log("Max Time for Infective is : ", maxTimeI[0]);
+
+        //     ress.forEach(final => {
+        //         if ((final.date.toString() === maxDateNorm.toString()) && (final.time.toString() === maxTimeN[0])) {
+        //             console.log("Final Result: ", final.status);
+        //         } 
+        //         else if ((final.date.toString() === maxDateInf.toString()) && (final.time.toString() === maxTimeI[0])) {
+        //             console.log("Final Result: ", final.status);
+        //         }
+        //     });
+        // }
+
+
+
+        ///////////////////////////////////////////////////////////
+
+
+        // let contacts = query2.rows;
+
+        //     no_interactions = []
+        //     contacts.forEach(element => {
+        //         const bea = element.beaconid_others;
+        //         no_interactions.push(bea);
+        //     });
+            
+
+        //     res.json(query2.rows);
+        //     ///////// working logic down
+        //     if (query2.rows[0] != null){
+        //         res.json({
+        //                 "result": 1,    ///   Interaction found
+        //                 "status" : 200
         //         }); 
-        // }
+        //         // res.json("Interation found");
+        //     }
+        //     else {
+        //         // res.json("No interaction found");
+        //         res.json({
+        //                 "result": 0,    ///   Interaction Not found
+        //                 "status" : 201
+        //             }); 
+        //     }
+//////////////////////////////////////////////////////////////
+        
         /////////////// end here
-        if (query2.rows[0] != null){
+        if (infected == true){
             res.json("Yes");   //  Interaction found
             // res.json("Interation found");
         }
