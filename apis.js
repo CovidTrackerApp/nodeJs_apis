@@ -544,14 +544,27 @@ app.get("/users", async(req, res) => {
     }
 })
 
+// get all the patient_status data. 
+app.get("/users_status/all", async(req, res) => {
+    try {
+        const allUsers = await client.query("SELECT * FROM user_status");
+        res.json(allUsers.rows);
+
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
+
 // get a specific user.
 app.get("/users/:id", async(req, res) => {
     try {
-        console.log(req.params);
-        console.log(req.params.id);
-        const {id} = req.params;
+        // console.log(req.params);
+        // console.log(req.params.id);
+        const {uname} = req.params;
 
-        const query = await client.query("SELECT * FROM users WHERE id = $1", [id]);
+        const query = await client.query("SELECT * FROM users WHERE uname = $1", [uname]);
         
         res.json(query.rows[0]);
 
