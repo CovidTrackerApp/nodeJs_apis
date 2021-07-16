@@ -108,7 +108,7 @@ app.post("/register", async(req, res) => {
         let errors = [];
         
         if (!uname || !password || !ph_no || !email || !age || !gender) {
-            res.status(200).json({
+            res.json({
                 "msg": "Please fill all the fields", 
                 "status" : 301
             });
@@ -228,7 +228,7 @@ app.post("/login", async(req, res) => {
         const {password} = req.body;
 
         if (!uname || !password) {
-            res.status(200).json({
+            res.json({
                 "msg": "Please fill all the fields", 
                 "status" : 301
             });
@@ -311,7 +311,7 @@ app.post("/verifyOTP", async(req, res) => {
         const {otp} = req.body;
 
         if (!uname || !otp) {
-            res.status(200).json({
+            res.json({
                 "msg": "Please fill all the fields", 
                 "status" : 301
             });
@@ -363,7 +363,7 @@ app.post("/sendotpviaemail", async(req, res) => {
         email = email.toLowerCase();
 
         if (!email) {
-            res.status(200).json({
+            res.json({
                 "msg": "Please provide your email", 
                 "status" : 301
             });
@@ -424,7 +424,7 @@ app.post("/verifyuserotp", async(req, res) => {
         const {otp} = req.body;
 
         if (!email || !otp) {
-            res.status(200).json({
+            res.json({
                 "msg": "Please fill all the fields", 
                 "status" : 301
             });
