@@ -23,7 +23,6 @@ const upload4 = multer({
 });
 
 
-
 const app = express();
 
 // middle ware
@@ -176,8 +175,8 @@ app.post("/register_venue", async(req, res) => {
         const {long} = req.body;
 
     
-        if (!ven_f_name || !ven_id || !password || ven_beacon || pname || !ph_no || !email) {
-            res.status(200).json({
+        if (!ven_f_name || !ven_id || !password || !ven_beacon || !pname || !ph_no || !email) {
+            res.json({
                 "msg": "Please fill all the fields", 
                 "status" : 301
             });
@@ -217,7 +216,7 @@ app.post("/register_venue", async(req, res) => {
                 // uid = uuid();
 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                client.query("INSERT INTO venue_registeration (ven_f_name, ven_id, password, ven_beacon, pname, email, ph_no, lat, long, verificationCode) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [ven_f_name, ven_id, pass_hash, ven_beacon, pname, email, ph_no, lat, long, verificationCode],
+                client.query("INSERT INTO venue_registeration (ven_f_name, ven_id, password, ven_beacon, pname, email, ph_no, lat, long, otp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [ven_f_name, ven_id, pass_hash, ven_beacon, pname, email, ph_no, lat, long, verificationCode],
                 (err, results) => {
                     if (err) {
                         throw err;
@@ -368,6 +367,28 @@ app.post("/ven_beacon_data", upload4.single("ven_beacon_data"), async (req, res)
         console.error(error.message);
     }
 })
+
+// database connection here. //
+async function dbStart() {
+    try { 
+        await client.connect();
+        console.log("DB connected successfully.");
+        // await client.query("");
+
+    }
+    catch (e) {
+        console.error(`The error has occured: ${e}`)
+    }
+}
+///
+
+app.listen(5000, () => {
+    console.log("Server has started on port 5000");
+    dbStart();
+})
+
+
+
 
 
 
