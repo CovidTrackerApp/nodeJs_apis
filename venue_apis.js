@@ -270,12 +270,76 @@ app.post("/register_venue", async(req, res) => {
 })
 
 
+// // Login venue system.
+// app.post("/login_venue", async(req, res) => {
+//     try {
+
+//         const {ven_id} = req.body;
+//         const {password} = req.body;
+
+//         if (!ven_id || !password) {
+//             res.json({
+//                 "msg": "Please fill all the fields", 
+//                 "status" : 301
+//             });
+//         }
+
+//         client.query("SELECT * FROM venue_registeration WHERE ven_id=$1", [ven_id], (err, results) => {
+//                 if (err) {
+//                     throw err;
+//                 }
+
+//                 console.log(results.rows);
+
+//                 if (results.rows.length > 0) {
+//                     const user = results.rows[0];
+                
+//                     bcrypt.compare(password, user.password, (err, isMatch) => {
+//                         if (err) {
+//                             throw err;
+//                         }
+
+//                         if (isMatch) {
+                            
+//                             // email = user.email;
+                            
+//                             res.json({
+//                                 "msg": "User authenticated", 
+//                                 "status" : 200,
+//                             });
+
+                    
+//                         }
+//                         else {
+//                             res.json({
+//                                 "msg": "Password is not correct", 
+//                                 "status" : 302
+//                             });
+//                         }
+//                     });
+//                 } else {
+//                     res.json({
+//                         "msg": "Venue id is not registered", 
+//                         "status" : 303
+//                     });
+//                 }
+                
+//             });
+
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// })
+
+
 // Login venue system.
-app.post("/login_venue", async(req, res) => {
+app.get("/login_venue/:ven_id/:password", async(req, res) => {
     try {
 
-        const {ven_id} = req.body;
-        const {password} = req.body;
+        // const {ven_id} = req.body;
+        // const {password} = req.body;
+        const {ven_id} = req.params;
+        const {password} = req.params;
 
         if (!ven_id || !password) {
             res.json({
@@ -330,6 +394,8 @@ app.post("/login_venue", async(req, res) => {
         console.error(error.message);
     }
 })
+
+
 
 
 // verify OTP
