@@ -182,11 +182,7 @@ app.post("/register_venue", async(req, res) => {
             });
         }
 
-        const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
-
-        const pass_hash = bcrypt.hashSync(password, salt);
-
+        
         // const query2 = await client.query("SELECT * FROM users WHERE uname = $1", [uname], (err, results) => {
         client.query("SELECT * FROM venue_registeration WHERE ven_id = $1", [ven_id], (err, results) => {
             if (err) { 
@@ -208,6 +204,13 @@ app.post("/register_venue", async(req, res) => {
                 }
 
                 const verificationCode = randomNum(10000, 99999);
+
+                // generate password hash
+                const saltRounds = 10;
+                const salt = bcrypt.genSaltSync(saltRounds);
+
+                const pass_hash = bcrypt.hashSync(password, salt);
+
                 
                 // // send Verification Code via email. 
                 sendEmail(verificationCode, email);    
