@@ -175,12 +175,12 @@ app.post("/register_venue", async(req, res) => {
         const {long} = req.body;
 
     
-        // if (!ven_f_name || !ven_id || !password || !ven_beacon || !pname || !ph_no || !email) {
-        //     res.json({
-        //         "msg": "Please fill all the fields", 
-        //         "status" : 301
-        //     });
-        // }
+        if (!ven_f_name || !ven_id || !password || !ven_beacon || !pname || !ph_no || !email) {
+            res.json({
+                "msg": "Please fill all the fields", 
+                "status" : 301
+            });
+        }
 
         
         // const query2 = await client.query("SELECT * FROM users WHERE uname = $1", [uname], (err, results) => {
