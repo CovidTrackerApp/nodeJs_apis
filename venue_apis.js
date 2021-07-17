@@ -204,35 +204,62 @@ app.post("/register_venue", async(req, res) => {
                 }
 
                 const verificationCode = randomNum(10000, 99999);
-
+                
                 // generate password hash
                 const saltRounds = 10;
-                const salt = bcrypt.genSaltSync(saltRounds);
+                bcrypt.genSalt(saltRounds, (err, salt) => {
+                    if(err) {
+                        console.error(err.message);
+                    }
+                    bcrypt.hash(password, salt , (err, hash) =>{
+                    if(err) {
+                        console.error(err.message);
+                    }
+                    // pass_hash = hash;
+                    sendEmail(verificationCode, email);    
+                
+                    client.query("INSERT INTO venue_registeration (ven_f_name, ven_id, password, ven_beacon, pname, email, ph_no, lat, long, otp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [ven_f_name, ven_id, hash, ven_beacon, pname, email, ph_no, lat, long, verificationCode],
+                    (err, results) => {
+                        if (err) {
+                            throw err;
+                        }
+                        else {
+                            
+                            res.json({
+                                "msg": results.rows[0],
+                                "status" : 200
+                            });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
+                            
+                        }
+                    });
+                    });
+                });
+                // const salt = bcrypt.genSaltSync(saltRounds);
 
-                const pass_hash = bcrypt.hashSync(password, salt);
+                // const pass_hash = bcrypt.hashSync(password, salt);
 
                 
                 // // send Verification Code via email. 
-                sendEmail(verificationCode, email);    
+                // sendEmail(verificationCode, email);    
                 
                 // token
                 // uid = uuid();
 
                 // const query = await client.query("INSERT INTO users (uname, password, ph_no, email, age, gender, status, u_beaconid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [uname, pass_hash, ph_no, email, age, gender, status, u_beaconid]);
-                client.query("INSERT INTO venue_registeration (ven_f_name, ven_id, password, ven_beacon, pname, email, ph_no, lat, long, otp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [ven_f_name, ven_id, pass_hash, ven_beacon, pname, email, ph_no, lat, long, verificationCode],
-                (err, results) => {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
+                // client.query("INSERT INTO venue_registeration (ven_f_name, ven_id, password, ven_beacon, pname, email, ph_no, lat, long, otp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [ven_f_name, ven_id, pass_hash, ven_beacon, pname, email, ph_no, lat, long, verificationCode],
+                // (err, results) => {
+                //     if (err) {
+                //         throw err;
+                //     }
+                //     else {
                         
-                        res.json({
-                            "msg": results.rows[0],
-                            "status" : 200
-                        });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
+                //         res.json({
+                //             "msg": results.rows[0],
+                //             "status" : 200
+                //         });  // rows[0] mean we dont need all the data in response we just need to read the data that we are inserting in to db just. so we specify row[0]
                         
-                    }
-                });
+                //     }
+                // });
             
             }
         });
