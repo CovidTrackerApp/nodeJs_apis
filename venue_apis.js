@@ -615,8 +615,8 @@ async function dbStart() {
 }
 ///
 
-app.listen(5000, () => {
-    console.log("Server has started on port 5000");
+app.listen(3000, () => {
+    console.log("Server has started on port 3000");
     dbStart();
 })
 
