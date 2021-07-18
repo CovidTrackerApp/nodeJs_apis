@@ -24,6 +24,10 @@ If the file is on your local machine and the database is on another, you cannot 
 2) Upload the file to the remote machine and then execute your command. Just make sure you are referencing the correct path and filename.
 
 
+# uploading file in python on server
+https://gist.github.com/vladwa/ba0ba632c0dcda33354c2d5e833672aa
+
+
 
 
 
