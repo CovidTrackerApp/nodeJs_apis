@@ -588,7 +588,7 @@ app.get("/verifyVenueOTP/:ven_id/:otp", async(req, res) => {
 
 
 // upload beacon_scan data
-app.post("/ven_beacon_data", upload4.single("ven_beacon_data"), async (req, res) => {
+app.get("/ven_beacon_data", upload4.single("ven_beacon_data"), async (req, res) => {
     try {
         console.log(req.file);
         
